@@ -230,26 +230,77 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.filterProducts = async (req, res) => {
-  const { minPrice, maxPrice } = req.query;
   try {
-    if (!minPrice || !maxPrice) {
-      return res
-        .status(400)
-        .json({ message: "Vui lòng cung cấp khoảng giá tiền hợp lệ." });
+    const {
+      minPrice,
+      maxPrice,
+      category,
+      sortByDate,
+      page = 0,
+      limit = 10,
+    } = req.query;
+
+    let query = {};
+
+    if (minPrice) {
+      const minPriceValue = parseFloat(minPrice);
+      if (isNaN(minPriceValue) || minPriceValue < 0) {
+        return res.status(400).send({
+          code: 1,
+          mess: "Giá tối thiểu phải là số dương",
+        });
+      }
+      query.price = { ...query.price, $gte: minPriceValue };
     }
 
-    const products = await Product.find({
-      price: {
-        $gte: parseFloat(minPrice),
-        $lte: parseFloat(maxPrice),
-      },
-    });
+    if (maxPrice) {
+      const maxPriceValue = parseFloat(maxPrice);
+      if (isNaN(maxPriceValue) || maxPriceValue < 0) {
+        return res.status(400).send({
+          code: 1,
+          mess: "Giá tối đa phải là số dương",
+        });
+      }
+      query.price = { ...query.price, $lte: maxPriceValue };
+    }
 
-    res.status(200).json(products);
-  } catch (error) {
-    res.status(500).json({
-      message: "Đã xảy ra lỗi trong quá trình tìm kiếm sản phẩm.",
-      error,
+    if (category) {
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        query.categories = mongoose.Types.ObjectId(category);
+      } else {
+        return res.status(400).send({
+          code: 1,
+          mess: "ID danh mục không hợp lệ",
+        });
+      }
+    }
+
+    const skip = page * limit;
+    const totalProducts = await Product.countDocuments(query);
+
+    const products = await Product.find(query)
+      .select("-status -description -type")
+      .populate({
+        path: "categories",
+        select: "name _id",
+      })
+      .sort(sortByDate === "newest" ? { createdAt: -1 } : { createdAt: 1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.status(200).send({
+      code: 0,
+      data: products,
+      total: totalProducts,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(totalProducts / limit),
+      },
+      mess: "Sản phẩm đã được lọc thành công",
     });
+  } catch (error) {
+    console.error("Error in filterProducts:", error);
+    res.status(400).send({ code: 1, mess: error.message });
   }
 };

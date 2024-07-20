@@ -6,6 +6,115 @@ const authToken = require("../utils/authToken");
 
 /**
  * @swagger
+ * /product/find:
+ *   get:
+ *     summary: Filter products by price, category, and date
+ *     tags: [Products]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: minPrice
+ *         description: Minimum price of the product (must be an even number)
+ *         schema:
+ *           type: number
+ *           format: float
+ *       - in: query
+ *         name: maxPrice
+ *         description: Maximum price of the product (must be an even number)
+ *         schema:
+ *           type: number
+ *           format: float
+ *       - in: query
+ *         name: category
+ *         description: ID of the category to filter products
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - in: query
+ *         name: sortByDate
+ *         description: Sort products by date, either "newest" or "oldest"
+ *         schema:
+ *           type: string
+ *           enum:
+ *             - newest
+ *             - oldest
+ *       - in: query
+ *         name: page
+ *         description: Page number for pagination
+ *         schema:
+ *           type: integer
+ *           default: 0
+ *       - in: query
+ *         name: limit
+ *         description: Number of products per page
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *     responses:
+ *       200:
+ *         description: A list of filtered products with pagination
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 0
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 total:
+ *                   type: integer
+ *                   example: 100
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                       example: 0
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 10
+ *                 mess:
+ *                   type: string
+ *                   example: "Sản phẩm đã được lọc thành công"
+ *       400:
+ *         description: Error filtering products
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 1
+ *                 mess:
+ *                   type: string
+ *                   example: "Giá tối thiểu phải là số chẵn"
+ *       404:
+ *         description: No products found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 1
+ *                 mess:
+ *                   type: string
+ *                   example: "Không tìm thấy sản phẩm"
+ */
+router.get("/find", verifyUser, authToken(1), ProductController.filterProducts);
+
+/**
+ * @swagger
  * /product/all:
  *   get:
  *     summary: Retrieve all products
@@ -416,114 +525,5 @@ router.patch(
   authToken(0),
   ProductController.changeStatus
 );
-
-/**
- * @swagger
- * /product/find:
- *   get:
- *     summary: Filter products by price, category, and date
- *     tags: [Products]
- *     security:
- *       - BearerAuth: []
- *     parameters:
- *       - in: query
- *         name: minPrice
- *         description: Minimum price of the product (must be an even number)
- *         schema:
- *           type: number
- *           format: float
- *       - in: query
- *         name: maxPrice
- *         description: Maximum price of the product (must be an even number)
- *         schema:
- *           type: number
- *           format: float
- *       - in: query
- *         name: category
- *         description: ID of the category to filter products
- *         schema:
- *           type: string
- *           format: uuid
- *       - in: query
- *         name: sortByDate
- *         description: Sort products by date, either "newest" or "oldest"
- *         schema:
- *           type: string
- *           enum:
- *             - newest
- *             - oldest
- *       - in: query
- *         name: page
- *         description: Page number for pagination
- *         schema:
- *           type: integer
- *           default: 0
- *       - in: query
- *         name: limit
- *         description: Number of products per page
- *         schema:
- *           type: integer
- *           default: 10
- *     responses:
- *       200:
- *         description: A list of filtered products with pagination
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 0
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Product'
- *                 total:
- *                   type: integer
- *                   example: 100
- *                 pagination:
- *                   type: object
- *                   properties:
- *                     page:
- *                       type: integer
- *                       example: 1
- *                     limit:
- *                       type: integer
- *                       example: 10
- *                     totalPages:
- *                       type: integer
- *                       example: 10
- *                 mess:
- *                   type: string
- *                   example: "Sản phẩm đã được lọc thành công"
- *       400:
- *         description: Error filtering products
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 1
- *                 mess:
- *                   type: string
- *                   example: "Giá tối thiểu phải là số chẵn"
- *       404:
- *         description: No products found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 1
- *                 mess:
- *                   type: string
- *                   example: "Không tìm thấy sản phẩm"
- */
-router.get("/find", verifyUser, authToken(1), ProductController.filterProducts);
 
 module.exports = router;
