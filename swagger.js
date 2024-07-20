@@ -11,7 +11,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "https://be-1-nd4y.onrender.com",
+      url: "https://assignment-of4r.onrender.com",
       description: "Development server",
     },
     {
