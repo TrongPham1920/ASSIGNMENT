@@ -17,8 +17,8 @@ exports.getCategory = async (req, res) => {
 // Thêm mới danh mục
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const newCategory = new Category({ name, description });
+    const { name } = req.body;
+    const newCategory = new Category({ name });
     await newCategory.save();
     res.status(201).send({
       code: 0,
@@ -34,10 +34,10 @@ exports.createCategory = async (req, res) => {
 exports.updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name } = req.body;
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
-      { name, description },
+      { name },
       { new: true, runValidators: true }
     );
 

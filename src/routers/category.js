@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const CategoryModel = require("../controllers/CategoryModel");
+const CategoryController = require("../controllers/CategoryController");
 const verifyUser = require("../utils/verifyUser");
 const authToken = require("../utils/authToken");
 
@@ -26,8 +26,6 @@ const authToken = require("../utils/authToken");
  *                     type: string
  *                   name:
  *                     type: string
- *                   description:
- *                     type: string
  *                   status:
  *                     type: boolean
  *                   createdAt:
@@ -37,7 +35,7 @@ const authToken = require("../utils/authToken");
  *       400:
  *         description: Error retrieving categories
  */
-router.get("/", verifyUser, authToken(1), CategoryModel.getCategory);
+router.get("/", verifyUser, authToken(1), CategoryController.getCategory);
 
 /**
  * @swagger
@@ -57,9 +55,6 @@ router.get("/", verifyUser, authToken(1), CategoryModel.getCategory);
  *               name:
  *                 type: string
  *                 example: "Electronics"
- *               description:
- *                 type: string
- *                 example: "Category for electronic devices"
  *     responses:
  *       201:
  *         description: Category created successfully
@@ -79,7 +74,12 @@ router.get("/", verifyUser, authToken(1), CategoryModel.getCategory);
  *       400:
  *         description: Invalid input
  */
-router.post("/create", verifyUser, authToken(0), CategoryModel.createCategory);
+router.post(
+  "/create",
+  verifyUser,
+  authToken(0),
+  CategoryController.createCategory
+);
 
 /**
  * @swagger
@@ -106,9 +106,6 @@ router.post("/create", verifyUser, authToken(0), CategoryModel.createCategory);
  *               name:
  *                 type: string
  *                 example: "Home Appliances"
- *               description:
- *                 type: string
- *                 example: "Category for home appliances"
  *     responses:
  *       200:
  *         description: Category updated successfully
@@ -134,7 +131,7 @@ router.put(
   "/update/:id",
   verifyUser,
   authToken(0),
-  CategoryModel.updateCategory
+  CategoryController.updateCategory
 );
 
 /**
@@ -175,7 +172,7 @@ router.patch(
   "/changeStatus/:id",
   verifyUser,
   authToken(0),
-  CategoryModel.changeStatus
+  CategoryController.changeStatus
 );
 
 module.exports = router;
