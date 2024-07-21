@@ -1,6 +1,8 @@
 const app = require("./src/app");
 require("dotenv").config();
 const router = require("./src/server/router");
+const express = require("express");
+require("dotenv").config();
 
 const bodyParser = require("body-parser");
 const swagger = require("./swagger");
@@ -12,4 +14,15 @@ swagger(app);
 
 app.use("/", router);
 
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
+const typeDefs = require("./TypeDefs");
+const resolvers = require("./Resolvers");
+const { ApolloServer } = require("apollo-server-express");
+const server = new ApolloServer({ typeDefs, resolvers });
+
+server.start().then(() => {
+  server.applyMiddleware({ app });
+
+  app.listen(PORT, () =>
+    console.log(`Server ready at http://localhost:${PORT}${server.graphqlPath}`)
+  );
+});
