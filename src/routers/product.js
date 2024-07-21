@@ -111,7 +111,7 @@ const authToken = require("../utils/authToken");
  *                   type: string
  *                   example: "Không tìm thấy sản phẩm"
  */
-router.get("/find", verifyUser, authToken(1), ProductController.filterProducts);
+router.get("/find", verifyUser, ProductController.filterProducts);
 
 /**
  * @swagger
@@ -142,7 +142,7 @@ router.get("/find", verifyUser, authToken(1), ProductController.filterProducts);
  *       400:
  *         description: Error retrieving products
  */
-router.get("/all", verifyUser, authToken(1), ProductController.getAllProduct);
+router.get("/all", verifyUser, ProductController.getAllProduct);
 
 /**
  * @swagger
@@ -207,7 +207,7 @@ router.get("/all", verifyUser, authToken(1), ProductController.getAllProduct);
  *       400:
  *         description: Error retrieving products
  */
-router.get("/", verifyUser, authToken(1), ProductController.getProduct);
+router.get("/", verifyUser, ProductController.getProduct);
 
 /**
  * @swagger
@@ -272,12 +272,7 @@ router.get("/", verifyUser, authToken(1), ProductController.getProduct);
  *       400:
  *         description: Error searching products
  */
-router.get(
-  "/search",
-  verifyUser,
-  authToken(1),
-  ProductController.searchProducts
-);
+router.get("/search", verifyUser, ProductController.searchProducts);
 
 /**
  * @swagger
@@ -481,7 +476,7 @@ router.put("/:id", verifyUser, authToken(0), ProductController.updateProduct);
  *       404:
  *         description: Product not found
  */
-router.get("/:id", verifyUser, authToken(1), ProductController.getProductById);
+router.get("/:id", verifyUser, ProductController.getProductById);
 
 /**
  * @swagger

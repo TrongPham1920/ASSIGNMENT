@@ -35,7 +35,7 @@ const authToken = require("../utils/authToken");
  *       400:
  *         description: Error retrieving categories
  */
-router.get("/", verifyUser, authToken(1), CategoryController.getCategory);
+router.get("/", verifyUser, CategoryController.getCategory);
 
 /**
  * @swagger
