@@ -30,7 +30,7 @@ const authToken = require("../utils/authToken");
  *         description: ID of the category to filter products
  *         schema:
  *           type: string
- *           format: uuid
+ *           format: string
  *       - in: query
  *         name: sortByDate
  *         description: Sort products by date, either "newest" or "oldest"
@@ -111,7 +111,7 @@ const authToken = require("../utils/authToken");
  *                   type: string
  *                   example: "Không tìm thấy sản phẩm"
  */
-router.get("/find", verifyUser, ProductController.filterProducts);
+router.get("/find", ProductController.filterProducts);
 
 /**
  * @swagger
@@ -142,7 +142,7 @@ router.get("/find", verifyUser, ProductController.filterProducts);
  *       400:
  *         description: Error retrieving products
  */
-router.get("/all", verifyUser, ProductController.getAllProduct);
+router.get("/all", ProductController.getAllProduct);
 
 /**
  * @swagger
@@ -207,7 +207,7 @@ router.get("/all", verifyUser, ProductController.getAllProduct);
  *       400:
  *         description: Error retrieving products
  */
-router.get("/", verifyUser, ProductController.getProduct);
+router.get("/", ProductController.getProduct);
 
 /**
  * @swagger
@@ -272,7 +272,7 @@ router.get("/", verifyUser, ProductController.getProduct);
  *       400:
  *         description: Error searching products
  */
-router.get("/search", verifyUser, ProductController.searchProducts);
+router.get("/search", ProductController.searchProducts);
 
 /**
  * @swagger
@@ -476,7 +476,7 @@ router.put("/:id", verifyUser, authToken(0), ProductController.updateProduct);
  *       404:
  *         description: Product not found
  */
-router.get("/:id", verifyUser, ProductController.getProductById);
+router.get("/:id", ProductController.getProductById);
 
 /**
  * @swagger
