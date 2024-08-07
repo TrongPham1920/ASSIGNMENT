@@ -123,3 +123,39 @@ exports.deleteUser = async (req, res) => {
     res.status(400).send({ code: 1, mess: error?.message });
   }
 };
+
+exports.changeStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+
+    if (!id) {
+      return res
+        .status(400)
+        .send({ code: 1, mess: "Thiếu thông tin id người dùng" });
+    }
+
+    if (typeof status !== "boolean") {
+      return res.status(400).send({ code: 1, mess: "Trạng thái không hợp lệ" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!user) {
+      return res
+        .status(404)
+        .send({ code: 1, mess: `Không tìm thấy UserID ${id}` });
+    }
+
+    res.send({
+      code: 0,
+      data: user,
+      mess: "Cập nhật trạng thái người dùng thành công",
+    });
+  } catch (error) {
+    res.status(400).send({ code: 1, mess: error?.message });
+  }
+};

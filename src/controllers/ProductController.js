@@ -83,7 +83,7 @@ exports.getAllProduct = async (req, res) => {
     const totalProducts = await Product.countDocuments();
 
     const Products = await Product.find()
-      .select("-status -description -type")
+      .select("-description -type")
       .populate({
         path: "categories",
         select: "name _id",
@@ -110,7 +110,6 @@ exports.getProduct = async (req, res) => {
     const totalProducts = await Product.countDocuments();
 
     const products = await Product.find()
-      .select("-status -description -type")
       .populate({
         path: "categories",
         select: "name _id",

@@ -5,19 +5,10 @@ const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
-    const {
-      userName,
-      email,
-      password,
-      address,
-      avatar,
-      fullName,
-      phone,
-      dateOfBirth,
-    } = req.body;
+    const { email, password, phone } = req.body;
 
     let user = await User.findOne({
-      $or: [{ userName }, { email }, { phone }],
+      $or: [{ email }, { phone }],
     });
 
     if (user) {
@@ -27,14 +18,9 @@ exports.register = async (req, res) => {
     }
 
     const newUser = new User({
-      userName,
       email,
       password,
-      address,
-      avatar,
-      fullName,
       phone,
-      dateOfBirth,
     });
 
     const salt = await bcrypt.genSalt(10);
@@ -67,10 +53,16 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET
     );
     const { password: pass, ...rest } = validUser._doc;
+
+    const responseData = {
+      user: rest,
+      token: token,
+    };
+
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
-      .json({ ...rest, token });
+      .json({ code: 0, mess: "Đăng nhập thành công", data: responseData });
   } catch (error) {
     res.status(400).send({ code: 1, mess: error?.message });
   }

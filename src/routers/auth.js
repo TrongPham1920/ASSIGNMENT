@@ -76,13 +76,9 @@ router.post("/login", AuthController.login);
  *           schema:
  *             type: object
  *             properties:
- *               userName:
- *                 type: string
  *               email:
  *                 type: string
  *               password:
- *                 type: string
- *               address:
  *                 type: string
  *               phone:
  *                 type: string

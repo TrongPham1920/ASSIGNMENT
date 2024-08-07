@@ -164,4 +164,80 @@ router.delete(
   UserController.deleteUser
 );
 
+/**
+ * @swagger
+ * /users/status:
+ *   patch:
+ *     summary: "Thay đổi trạng thái của người dùng"
+ *     description: "Cập nhật trạng thái của người dùng theo ID."
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *                 example: "60d5f7b3f1b2c0a1b4d2e3f4"
+ *               status:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: "Cập nhật trạng thái người dùng thành công"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 0
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: "60d5f7b3f1b2c0a1b4d2e3f4"
+ *                     email:
+ *                       type: string
+ *                       example: "example@example.com"
+ *                     status:
+ *                       type: boolean
+ *                       example: true
+ *                     # Thêm các thuộc tính khác nếu cần
+ *                 mess:
+ *                   type: string
+ *                   example: "Cập nhật trạng thái người dùng thành công"
+ *       400:
+ *         description: "Yêu cầu không hợp lệ"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 1
+ *                 mess:
+ *                   type: string
+ *                   example: "Thiếu thông tin id người dùng"
+ *       404:
+ *         description: "Không tìm thấy người dùng"
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 1
+ *                 mess:
+ *                   type: string
+ *                   example: "Không tìm thấy UserID 60d5f7b3f1b2c0a1b4d2e3f4"
+ */
+router.patch("/status", verifyUser, authToken(1), UserController.changeStatus);
+
 module.exports = router;
